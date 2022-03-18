@@ -60,7 +60,7 @@ public class Encryption
     String[][] jamble = new String[numRows][numCols];
     int shift = 2;
     String encrypted ="";
-    if (shift == letterBlock.length) {
+    if (shift == letterBlock[0].length) {
         for(String[] wordList : letterBlock) {
             for(String letter : wordList) {
                 encrypted += letter;
@@ -70,8 +70,8 @@ public class Encryption
     else {
         for(int rr = 0; rr < letterBlock.length; rr++) {
             for(int cc = 0; cc< letterBlock[0].length; cc++) {
-                if(cc >= letterBlock.length - shift) {
-                    jamble[rr][(cc + shift) - letterBlock.length] = letterBlock[rr][cc];
+                if(cc >= letterBlock[0].length - shift) {
+                    jamble[rr][(cc + shift) - letterBlock[0].length] = letterBlock[rr][cc];
                 }
                 else {
                     jamble[rr][cc + 2] = letterBlock[rr][cc];
@@ -153,7 +153,46 @@ public class Encryption
             eWords[i] = encryptedMessage.substring(temp, temp + size);
             temp += size;
         }
-        
-        return "hi";
+        String encrypted ="";
+        for(int ii = 0; ii < eWords.length; ii++) {
+            int count = 0;
+            String[][] wordList = new String[numRows][numCols];
+            for (int r = 0; r < wordList.length; r++) {
+                for (int c = 0; c < wordList[0].length; c++) {
+                    wordList[r][c] = eWords[ii].substring(count, count + 1);
+                    count++;
+                }
+            }
+            int shift = 2;
+
+                String[][] newDecrypt = new String[numRows][numCols];
+                for (int r = 0; r < wordList.length; r++) {
+                    for (int c = 0; c < wordList[0].length; c++) {
+                        if (c < shift) {
+                            newDecrypt[r][(c + wordList[0].length) - shift] = wordList[r][c];
+                        } else {
+                            newDecrypt[r][c - 2] = wordList[r][c];
+                        }
+                    }
+                }
+                if (ii == eWords.length - 1) {
+                    for (int aNums = 0; aNums < newDecrypt.length; aNums++) {
+                        for (int aNum = 0; aNum < newDecrypt[0].length; aNum++) {
+                            if (newDecrypt[aNums][aNum].equals("A"))
+                                newDecrypt[aNums][aNum] = "key";
+                        }
+                    }
+                }
+                    for (int rr = 0; rr < newDecrypt.length; rr++) {
+                        for (int cc = 0; cc < newDecrypt[0].length; cc++) {
+                            if (ii == eWords.length - 1) {
+                                if (newDecrypt[rr][cc].equals("key")) break;
+                            }
+                            encrypted += newDecrypt[rr][cc];
+                        }
+                    }
+            }
+
+        return encrypted;
     }
 }
